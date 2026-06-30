@@ -18,8 +18,11 @@ View your app in AI Studio: https://ai.studio/apps/4e72faf1-a7c0-4ecf-a841-d6435
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
 🚀 DueNow — AI Executive Operating System
+
 A Voice-First Intelligent Executive Companion that transforms planning into execution through Explainable AI, Workspace Intelligence™, and Google Workspace Integration.
+
 📌 Project Overview
 
 Modern productivity tools excel at storing information but often leave users responsible for organizing, prioritizing, and deciding what to do next. As a result, students, professionals, researchers, startup founders, and creators spend a significant portion of their time switching between multiple applications, manually planning schedules, searching for documents, and managing deadlines instead of focusing on meaningful work.
