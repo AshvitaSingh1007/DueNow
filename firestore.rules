@@ -1,0 +1,318 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default deny everything
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Functions for Validation
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isUser(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidString(val, maxLen) {
+      return val is string && val.size() <= maxLen;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Entity-Specific Validation Helpers
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['email', 'name', 'personality', 'workingHours']) &&
+             data.keys().size() == 4 &&
+             isValidString(data.email, 128) &&
+             isValidString(data.name, 128) &&
+             data.personality in ['mentor', 'best_friend', 'professional', 'coach'] &&
+             data.workingHours is map &&
+             data.workingHours.keys().hasAll(['start', 'end', 'timezone']) &&
+             data.workingHours.keys().size() == 3 &&
+             isValidString(data.workingHours.start, 5) &&
+             isValidString(data.workingHours.end, 5) &&
+             isValidString(data.workingHours.timezone, 64);
+    }
+
+    function isValidPreferences(data) {
+      return data.keys().hasAll(['voicePreference', 'theme', 'reminderStyle']) &&
+             data.keys().size() == 3 &&
+             isValidString(data.voicePreference, 64) &&
+             data.theme in ['light', 'dark'] &&
+             data.reminderStyle in ['professional', 'motivational', 'casual'];
+    }
+
+    function isValidMemory(data) {
+      return data.keys().hasAll(['assistantName', 'conversationSummary', 'lastUpdate']) &&
+             data.keys().size() == 3 &&
+             isValidString(data.assistantName, 64) &&
+             isValidString(data.conversationSummary, 4096) &&
+             data.lastUpdate is int;
+    }
+
+    function isValidTask(data) {
+      return data.keys().hasAll(['taskId', 'title', 'deadline', 'status', 'priority', 'estimatedDuration', 'workspaceId', 'successProbability', 'createdAt']) &&
+             data.keys().size() >= 9 &&
+             isValidId(data.taskId) &&
+             isValidString(data.title, 256) &&
+             data.deadline is int &&
+             data.status in ['pending', 'in_progress', 'completed'] &&
+             data.priority in ['low', 'medium', 'high', 'critical', 'ai_recommended'] &&
+             data.estimatedDuration is int &&
+             isValidId(data.workspaceId) &&
+             data.successProbability is map &&
+             data.successProbability.current is int &&
+             data.successProbability.current >= 0 &&
+             data.successProbability.current <= 100 &&
+             data.createdAt is int;
+    }
+
+    function isValidWorkspace(data) {
+      return data.keys().hasAll(['workspaceId', 'name', 'type', 'health', 'folderPath', 'files', 'lastScanned', 'submissionReady', 'missingComponents', 'projectSummary']) &&
+             data.keys().size() == 10 &&
+             isValidId(data.workspaceId) &&
+             isValidString(data.name, 128) &&
+             data.type in ['hackathon', 'interview', 'college', 'custom'] &&
+             data.health is int &&
+             data.health >= 0 &&
+             data.health <= 100 &&
+             isValidString(data.folderPath, 512) &&
+             data.files is list &&
+             data.lastScanned is int &&
+             data.submissionReady is bool &&
+             data.missingComponents is list &&
+             isValidString(data.projectSummary, 2048);
+    }
+
+    function isValidConversation(data) {
+      return data.keys().hasAll(['conversationId', 'timestamp', 'userInput', 'aiResponse', 'intent', 'confidence']) &&
+             isValidId(data.conversationId) &&
+             data.timestamp is int &&
+             isValidString(data.userInput, 2048) &&
+             isValidString(data.aiResponse, 4096) &&
+             isValidString(data.intent, 64) &&
+             (data.confidence is float || data.confidence is int);
+    }
+
+    function isValidReminder(data) {
+      return data.keys().hasAll(['reminderId', 'taskId', 'scheduledTime', 'reminderType', 'message', 'sent', 'personality']) &&
+             data.keys().size() == 7 &&
+             isValidId(data.reminderId) &&
+             isValidId(data.taskId) &&
+             data.scheduledTime is int &&
+             data.reminderType in ['motivational', 'professional', 'warning'] &&
+             isValidString(data.message, 512) &&
+             data.sent is bool &&
+             data.personality in ['mentor', 'best_friend', 'professional', 'coach'];
+    }
+
+    function isValidCalendarEvent(data) {
+      return data.keys().hasAll(['eventId', 'title', 'startTime', 'endTime']) &&
+             isValidId(data.eventId) &&
+             isValidString(data.title, 256) &&
+             data.startTime is int &&
+             data.endTime is int;
+    }
+
+    function isValidGoal(data) {
+      return data.keys().hasAll(['goalId', 'title', 'objective', 'targetDate', 'createdAt', 'status']) &&
+             isValidId(data.goalId) &&
+             isValidString(data.title, 128) &&
+             isValidString(data.objective, 1024) &&
+             data.targetDate is int &&
+             data.createdAt is int &&
+             data.status in ['active', 'completed', 'archived'];
+    }
+
+    function isValidAutomation(data) {
+      return data.keys().hasAll(['id', 'name', 'triggerCondition', 'actionType', 'enabled']) &&
+             isValidId(data.id) &&
+             isValidString(data.name, 128) &&
+             isValidString(data.triggerCondition, 128) &&
+             isValidString(data.actionType, 128) &&
+             data.enabled is bool;
+    }
+
+    function isValidAdaptivePreferences(data) {
+      return data.keys().hasAll(['preferredWorkStart', 'preferredWorkEnd', 'preferredFocusDuration', 'preferredReminderTiming', 'preferredMeetingBuffer']) &&
+             isValidString(data.preferredWorkStart, 5) &&
+             isValidString(data.preferredWorkEnd, 5) &&
+             data.preferredFocusDuration is int &&
+             data.preferredReminderTiming is int &&
+             data.preferredMeetingBuffer is int;
+    }
+
+    function isValidAIReasoningLog(data) {
+      return data.keys().hasAll(['decisionId', 'timestamp', 'request', 'actionsTaken', 'reasoningChain']) &&
+             isValidId(data.decisionId) &&
+             data.timestamp is int &&
+             isValidString(data.request, 2048) &&
+             data.actionsTaken is list &&
+             data.reasoningChain is list;
+    }
+
+    function isValidConversationSettings(data) {
+      return data.keys().hasAll(['autoSummarize', 'proactivity', 'maxHistoryTurns', 'updatedAt']) &&
+             data.keys().size() == 4 &&
+             data.autoSummarize is bool &&
+             data.proactivity in ['low', 'medium', 'high'] &&
+             data.maxHistoryTurns is int &&
+             data.updatedAt is int;
+    }
+
+    function isValidNotificationSettings(data) {
+      return data.keys().hasAll(['emailEnabled', 'pushEnabled', 'dailyDigest', 'reminderThresholdMinutes', 'updatedAt']) &&
+             data.keys().size() == 5 &&
+             data.emailEnabled is bool &&
+             data.pushEnabled is bool &&
+             data.dailyDigest is bool &&
+             data.reminderThresholdMinutes is int &&
+             data.updatedAt is int;
+    }
+
+    // Users Collection and Subcollections Group
+    match /users/{userId} {
+      allow read, write: if isUser(userId);
+      
+      match /profile/{profileId} {
+        allow get: if isUser(userId);
+        allow create: if isUser(userId) && isValidUserProfile(request.resource.data);
+        allow update: if isUser(userId) && isValidUserProfile(request.resource.data);
+        allow delete: if isUser(userId);
+      }
+
+      match /preferences/{preferenceId} {
+        allow get: if isUser(userId);
+        allow create: if isUser(userId) && (preferenceId == 'settings' ? isValidPreferences(request.resource.data) : (preferenceId == 'adaptive' ? isValidAdaptivePreferences(request.resource.data) : false));
+        allow update: if isUser(userId) && (preferenceId == 'settings' ? isValidPreferences(request.resource.data) : (preferenceId == 'adaptive' ? isValidAdaptivePreferences(request.resource.data) : false));
+        allow delete: if isUser(userId);
+      }
+
+      match /memory/{memoryId} {
+        allow get: if isUser(userId);
+        allow create: if isUser(userId) && isValidMemory(request.resource.data);
+        allow update: if isUser(userId) && isValidMemory(request.resource.data);
+        allow delete: if isUser(userId);
+      }
+
+      match /tasks/{taskId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(taskId) && isValidTask(request.resource.data);
+        allow update: if isUser(userId) && isValidId(taskId) && isValidTask(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(taskId);
+      }
+
+      match /workspaces/{workspaceId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(workspaceId) && isValidWorkspace(request.resource.data);
+        allow update: if isUser(userId) && isValidId(workspaceId) && isValidWorkspace(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(workspaceId);
+      }
+
+      match /conversations/{conversationId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(conversationId) && isValidConversation(request.resource.data);
+        allow update: if isUser(userId) && isValidId(conversationId) && isValidConversation(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(conversationId);
+      }
+
+      match /reminders/{reminderId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(reminderId) && isValidReminder(request.resource.data);
+        allow update: if isUser(userId) && isValidId(reminderId) && isValidReminder(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(reminderId);
+      }
+
+      match /calendar_events/{eventId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(eventId) && isValidCalendarEvent(request.resource.data);
+        allow update: if isUser(userId) && isValidId(eventId) && isValidCalendarEvent(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(eventId);
+      }
+
+      match /goals/{goalId} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(goalId) && isValidGoal(request.resource.data);
+        allow update: if isUser(userId) && isValidId(goalId) && isValidGoal(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(goalId);
+      }
+
+      match /automations/{id} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(id) && isValidAutomation(request.resource.data);
+        allow update: if isUser(userId) && isValidId(id) && isValidAutomation(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(id);
+      }
+
+      match /reasoning_logs/{id} {
+        allow get: if isUser(userId);
+        allow list: if isUser(userId);
+        allow create: if isUser(userId) && isValidId(id) && isValidAIReasoningLog(request.resource.data);
+        allow update: if isUser(userId) && isValidId(id) && isValidAIReasoningLog(request.resource.data);
+        allow delete: if isUser(userId) && isValidId(id);
+      }
+
+      match /timeline/{id} {
+        allow get, write: if isUser(userId);
+      }
+
+      match /execution_history/{id} {
+        allow get, write: if isUser(userId);
+      }
+
+      match /recommendations/{id} {
+        allow get, write: if isUser(userId);
+      }
+
+      match /focus_sessions/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /keep_notes/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /conversation_settings/{id} {
+        allow get: if isUser(userId);
+        allow write: if isUser(userId) && isValidConversationSettings(request.resource.data);
+      }
+
+      match /notifications/{id} {
+        allow get, list: if isUser(userId);
+        allow write: if isUser(userId) && (id == 'settings' ? isValidNotificationSettings(request.resource.data) : true);
+      }
+
+      match /analytics/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /workspace_health/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /submission_readiness/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /documents/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+
+      match /execution_logs/{id} {
+        allow get, list, write: if isUser(userId);
+      }
+    }
+  }
+}

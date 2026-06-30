@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <script>
+      // Vite WebSocket Stabilization for Google AI Studio sandbox
+      (function() {
+        const OriginalWebSocket = window.WebSocket;
+        if (!OriginalWebSocket) return;
+
+        const CustomWebSocket = function(url, protocols) {
+          const isViteHmr = typeof url === 'string' && (
+            url.includes('/vite') || 
+            url.includes('ais-dev') || 
+            url.includes('ais-pre') ||
+            url.includes('localhost:3000') ||
+            url.includes('127.0.0.1:3000') ||
+            url.includes('0.0.0.0:3000')
+          );
+
+          if (isViteHmr) {
+            console.warn('[Vite WebSocket Mock] Suppressed HMR WebSocket connection to prevent console flooding:', url);
+            
+            const self = this;
+            Object.defineProperty(this, 'url', { value: url, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'readyState', { value: 0, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'bufferedAmount', { value: 0, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'extensions', { value: '', writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'protocol', { value: '', writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'binaryType', { value: 'blob', writable: true, enumerable: true, configurable: true });
+            
+            Object.defineProperty(this, 'onopen', { value: null, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'onclose', { value: null, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'onerror', { value: null, writable: true, enumerable: true, configurable: true });
+            Object.defineProperty(this, 'onmessage', { value: null, writable: true, enumerable: true, configurable: true });
+
+            const listeners = {};
+
+            this.addEventListener = function(type, callback) {
+              if (!listeners[type]) {
+                listeners[type] = [];
+              }
+              listeners[type].push(callback);
+              
+              if (type === 'open') Object.defineProperty(self, 'onopen', { value: callback, writable: true, enumerable: true, configurable: true });
+              if (type === 'close') Object.defineProperty(self, 'onclose', { value: callback, writable: true, enumerable: true, configurable: true });
+              if (type === 'error') Object.defineProperty(self, 'onerror', { value: callback, writable: true, enumerable: true, configurable: true });
+              if (type === 'message') Object.defineProperty(self, 'onmessage', { value: callback, writable: true, enumerable: true, configurable: true });
+            };
+
+            this.removeEventListener = function(type, callback) {
+              if (listeners[type]) {
+                listeners[type] = listeners[type].filter(cb => cb !== callback);
+              }
+            };
+
+            this.dispatchEvent = function(event) {
+              const type = event.type;
+              if (listeners[type]) {
+                listeners[type].forEach(cb => {
+                  try {
+                    cb.call(self, event);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                });
+              }
+              return true;
+            };
+
+            this.send = function(data) {
+              // Graceful no-op
+            };
+
+            this.close = function(code, reason) {
+              if (this.readyState === 3) return;
+              this.readyState = 3; // CLOSED
+              
+              const closeEvent = {
+                type: 'close',
+                code: code || 1000,
+                reason: reason || 'Mock closed gracefully',
+                wasClean: true,
+                target: self,
+                currentTarget: self,
+                srcElement: self,
+                bubbles: false,
+                cancelable: false,
+                timeStamp: performance.now()
+              };
+
+              if (typeof this.onclose === 'function') {
+                try {
+                  this.onclose.call(self, closeEvent);
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+              
+              if (listeners['close']) {
+                listeners['close'].forEach(cb => {
+                  try {
+                    cb.call(self, closeEvent);
+                  } catch (e) {
+                    console.error(e);
+                  }
+                });
+              }
+            };
+
+            // Stay open instead of closing to let client handle HMR gracefully as connected
+            setTimeout(() => {
+              if (self.readyState === 0) {
+                self.readyState = 1; // OPEN
+                
+                const openEvent = {
+                  type: 'open',
+                  target: self,
+                  currentTarget: self,
+                  srcElement: self,
+                  bubbles: false,
+                  cancelable: false,
+                  timeStamp: performance.now()
+                };
+
+                if (typeof self.onopen === 'function') {
+                  try {
+                    self.onopen.call(self, openEvent);
+                  } catch (e) {}
+                }
+                if (listeners['open']) {
+                  listeners['open'].forEach(cb => {
+                    try {
+                      cb.call(self, openEvent);
+                    } catch (e) {}
+                  });
+                }
+              }
+            }, 10);
+
+            return this;
+          }
+
+          const instance = protocols !== undefined ? new OriginalWebSocket(url, protocols) : new OriginalWebSocket(url);
+          return instance;
+        };
+
+        CustomWebSocket.CONNECTING = OriginalWebSocket.CONNECTING;
+        CustomWebSocket.OPEN = OriginalWebSocket.OPEN;
+        CustomWebSocket.CLOSING = OriginalWebSocket.CLOSING;
+        CustomWebSocket.CLOSED = OriginalWebSocket.CLOSED;
+
+        window.WebSocket = CustomWebSocket;
+
+        // Prevent and handle any unhandled rejections about WebSocket
+        window.addEventListener('unhandledrejection', function(event) {
+          const reasonStr = String(event.reason?.message || event.reason || '');
+          if (reasonStr.includes('WebSocket') || reasonStr.includes('websocket')) {
+            console.warn('[Vite WebSocket Mock] Handled unhandled rejection:', event.reason);
+            event.preventDefault();
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

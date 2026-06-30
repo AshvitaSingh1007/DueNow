@@ -1,0 +1,6 @@
+{
+  "name": "DueNow",
+  "description": "DueNow is a Voice-First AI Executive Companion that helps users plan, organize, prioritize, and execute work through natural conversation.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

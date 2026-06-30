@@ -1,0 +1,336 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User basic profile details and assistant personality preference.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "personality": { "type": "string", "enum": ["mentor", "best_friend", "professional", "coach"] },
+        "workingHours": {
+          "type": "object",
+          "properties": {
+            "start": { "type": "string" },
+            "end": { "type": "string" },
+            "timezone": { "type": "string" }
+          },
+          "required": ["start", "end", "timezone"]
+        }
+      },
+      "required": ["email", "name", "personality", "workingHours"]
+    },
+    "UserPreferences": {
+      "title": "UserPreferences",
+      "description": "Voice configuration and interface customization preferences.",
+      "type": "object",
+      "properties": {
+        "voicePreference": { "type": "string" },
+        "theme": { "type": "string", "enum": ["light", "dark"] },
+        "reminderStyle": { "type": "string", "enum": ["professional", "motivational", "casual"] }
+      },
+      "required": ["voicePreference", "theme", "reminderStyle"]
+    },
+    "AssistantMemory": {
+      "title": "AssistantMemory",
+      "description": "Assistant memory store representing ongoing state of work context.",
+      "type": "object",
+      "properties": {
+        "assistantName": { "type": "string" },
+        "conversationSummary": { "type": "string" },
+        "lastUpdate": { "type": "number" }
+      },
+      "required": ["assistantName", "conversationSummary", "lastUpdate"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Individual task tracking details, including success probability calculation.",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "deadline": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "in_progress", "completed"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "estimatedDuration": { "type": "number" },
+        "workspaceId": { "type": "string" },
+        "successProbability": {
+          "type": "object",
+          "properties": {
+            "current": { "type": "number" },
+            "factors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "score": { "type": "number" },
+                  "weight": { "type": "number" }
+                },
+                "required": ["name", "score", "weight"]
+              }
+            },
+            "recommendations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string" },
+                  "expectedImprovement": { "type": "number" }
+                },
+                "required": ["action", "expectedImprovement"]
+              }
+            }
+          },
+          "required": ["current", "factors", "recommendations"]
+        },
+        "createdAt": { "type": "number" },
+        "completedAt": { "type": "number" }
+      },
+      "required": ["taskId", "title", "deadline", "status", "priority", "estimatedDuration", "workspaceId", "successProbability", "createdAt"]
+    },
+    "Workspace": {
+      "title": "Workspace",
+      "description": "A workspace mapping to a folder path, containing code/docs and metadata.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["hackathon", "interview", "college", "custom"] },
+        "health": { "type": "number" },
+        "healthFactors": {
+          "type": "object",
+          "properties": {
+            "documentation": { "type": "number" },
+            "organization": { "type": "number" },
+            "submissionFiles": { "type": "number" },
+            "projectStructure": { "type": "number" }
+          },
+          "required": ["documentation", "organization", "submissionFiles", "projectStructure"]
+        },
+        "folderPath": { "type": "string" },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "category": { "type": "string", "enum": ["code", "documentation", "presentation", "image", "data", "unknown"] }
+            },
+            "required": ["name", "category"]
+          }
+        },
+        "lastScanned": { "type": "number" },
+        "submissionReady": { "type": "boolean" },
+        "missingComponents": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "projectSummary": { "type": "string" }
+      },
+      "required": ["workspaceId", "name", "type", "health", "folderPath", "files", "lastScanned", "submissionReady", "missingComponents", "projectSummary"]
+    },
+    "ConversationMessage": {
+      "title": "ConversationMessage",
+      "description": "Logs of user and AI verbal dialogues, including intent parsing metrics.",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "userInput": { "type": "string" },
+        "aiResponse": { "type": "string" },
+        "intent": { "type": "string" },
+        "confidence": { "type": "number" },
+        "reasoning": { "type": "string" }
+      },
+      "required": ["conversationId", "timestamp", "userInput", "aiResponse", "intent", "confidence"]
+    },
+    "Reminder": {
+      "title": "Reminder",
+      "description": "Individual notifications scheduled or sent to users to nudge productivity.",
+      "type": "object",
+      "properties": {
+        "reminderId": { "type": "string" },
+        "taskId": { "type": "string" },
+        "scheduledTime": { "type": "number" },
+        "reminderType": { "type": "string", "enum": ["motivational", "professional", "warning"] },
+        "message": { "type": "string" },
+        "sent": { "type": "boolean" },
+        "personality": { "type": "string" }
+      },
+      "required": ["reminderId", "taskId", "scheduledTime", "reminderType", "message", "sent", "personality"]
+    },
+    "CalendarEvent": {
+      "title": "CalendarEvent",
+      "description": "Events imported from user's calendar with overlap validation.",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "title": { "type": "string" },
+        "startTime": { "type": "number" },
+        "endTime": { "type": "number" },
+        "description": { "type": "string" },
+        "attendees": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["eventId", "title", "startTime", "endTime"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Smart, long-term goals tracked with milestones and completion probability.",
+      "type": "object",
+      "properties": {
+        "goalId": { "type": "string" },
+        "title": { "type": "string" },
+        "objective": { "type": "string" },
+        "targetDate": { "type": "number" },
+        "relatedTasks": { "type": "array", "items": { "type": "string" } },
+        "relatedWorkspaces": { "type": "array", "items": { "type": "string" } },
+        "relatedDocuments": { "type": "array", "items": { "type": "string" } },
+        "milestones": { "type": "array", "items": { "type": "object" } },
+        "completionPercentage": { "type": "number" },
+        "currentRisks": { "type": "array", "items": { "type": "string" } },
+        "successProbability": { "type": "number" },
+        "executiveSummary": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["goalId", "title", "objective", "targetDate", "createdAt", "status"]
+    },
+    "AutomationRule": {
+      "title": "AutomationRule",
+      "description": "User-defined workflow and proactive triggers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "triggerCondition": { "type": "string" },
+        "thresholdValue": { "type": "number" },
+        "actionType": { "type": "string" },
+        "actionDescription": { "type": "string" },
+        "enabled": { "type": "boolean" }
+      },
+      "required": ["id", "name", "triggerCondition", "actionType", "enabled"]
+    },
+    "AdaptivePreferences": {
+      "title": "AdaptivePreferences",
+      "description": "AI-derived custom scheduler and behavioral timings.",
+      "type": "object",
+      "properties": {
+        "preferredWorkStart": { "type": "string" },
+        "preferredWorkEnd": { "type": "string" },
+        "preferredFocusDuration": { "type": "number" },
+        "preferredReminderTiming": { "type": "number" },
+        "preferredMeetingBuffer": { "type": "number" },
+        "communicationStyle": { "type": "string" },
+        "aiProactivity": { "type": "string" }
+      },
+      "required": ["preferredWorkStart", "preferredWorkEnd", "preferredFocusDuration", "preferredReminderTiming", "preferredMeetingBuffer"]
+    },
+    "AIReasoningLog": {
+      "title": "AIReasoningLog",
+      "description": "Detailed trace log of AI decision orchestrations and explainable models.",
+      "type": "object",
+      "properties": {
+        "decisionId": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "request": { "type": "string" },
+        "actionsTaken": { "type": "array", "items": { "type": "string" } },
+        "reasoningChain": { "type": "array", "items": { "type": "string" } },
+        "riskIdentified": { "type": "string" },
+        "finalDecision": { "type": "string" }
+      },
+      "required": ["decisionId", "timestamp", "request", "actionsTaken", "reasoningChain"]
+    },
+    "ConversationSettings": {
+      "title": "ConversationSettings",
+      "description": "Interactive settings for AI chat context limits and proactivity.",
+      "type": "object",
+      "properties": {
+        "autoSummarize": { "type": "boolean" },
+        "proactivity": { "type": "string" },
+        "maxHistoryTurns": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["autoSummarize", "proactivity", "maxHistoryTurns", "updatedAt"]
+    },
+    "NotificationSettings": {
+      "title": "NotificationSettings",
+      "description": "Email, digest, and real-time alert configurations.",
+      "type": "object",
+      "properties": {
+        "emailEnabled": { "type": "boolean" },
+        "pushEnabled": { "type": "boolean" },
+        "dailyDigest": { "type": "boolean" },
+        "reminderThresholdMinutes": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["emailEnabled", "pushEnabled", "dailyDigest", "reminderThresholdMinutes", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/profile/{profileId}": {
+      "schema": "UserProfile",
+      "description": "User basic profile details"
+    },
+    "/users/{userId}/preferences/{preferenceId}": {
+      "schema": "UserPreferences",
+      "description": "User customizable voice and theme settings"
+    },
+    "/users/{userId}/preferences/adaptive": {
+      "schema": "AdaptivePreferences",
+      "description": "AI-learned adaptive preference timing"
+    },
+    "/users/{userId}/memory/{memoryId}": {
+      "schema": "AssistantMemory",
+      "description": "Memory context for the AI executive assistant"
+    },
+    "/users/{userId}/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Subcollection storing tasks with success probability estimates"
+    },
+    "/users/{userId}/workspaces/{workspaceId}": {
+      "schema": "Workspace",
+      "description": "Subcollection containing project files, categorization, and workspace health scores"
+    },
+    "/users/{userId}/conversations/{conversationId}": {
+      "schema": "ConversationMessage",
+      "description": "Subcollection tracking natural dialogues, parsed intents, and AI reasoning"
+    },
+    "/users/{userId}/reminders/{reminderId}": {
+      "schema": "Reminder",
+      "description": "Subcollection mapping custom nudges and scheduling triggers"
+    },
+    "/users/{userId}/calendar_events/{eventId}": {
+      "schema": "CalendarEvent",
+      "description": "Subcollection of imported and synced Google calendar events"
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User business goals and execution probability scores"
+    },
+    "/users/{userId}/automations/{ruleId}": {
+      "schema": "AutomationRule",
+      "description": "Workspace custom triggers and background rules"
+    },
+    "/users/{userId}/reasoning_logs/{decisionId}": {
+      "schema": "AIReasoningLog",
+      "description": "Decision-making audit trail for explainable AI reasoning"
+    },
+    "/users/{userId}/conversation_settings/{settingsId}": {
+      "schema": "ConversationSettings",
+      "description": "User custom chat parameters and history settings"
+    },
+    "/users/{userId}/notifications/{settingsId}": {
+      "schema": "NotificationSettings",
+      "description": "User email, push, and digest reminder preferences"
+    }
+  }
+}
