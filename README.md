@@ -19,275 +19,320 @@ View your app in AI Studio: https://ai.studio/apps/4e72faf1-a7c0-4ecf-a841-d6435
 3. Run the app:
    `npm run dev`
 
-🚀 DueNow — AI Executive Operating System
+DueNow
 
-A Voice-First Intelligent Executive Companion that transforms planning into execution through Explainable AI, Workspace Intelligence™, and Google Workspace Integration.
+Voice-First AI Executive Companion
 
-📌 Project Overview
+Executive Summary
 
-Modern productivity tools excel at storing information but often leave users responsible for organizing, prioritizing, and deciding what to do next. As a result, students, professionals, researchers, startup founders, and creators spend a significant portion of their time switching between multiple applications, manually planning schedules, searching for documents, and managing deadlines instead of focusing on meaningful work.
+DueNow is an AI-powered executive companion that helps users plan, organize, and complete their work through natural voice conversations.
 
-DueNow addresses this challenge by introducing a completely new paradigm: an AI Executive Operating System. Rather than functioning as a traditional task manager or chatbot, DueNow acts as an intelligent executive companion that continuously understands the user's work, reasons across multiple data sources, proactively identifies risks, and recommends the most effective actions to maximize productivity.
+Unlike traditional productivity tools that simply store tasks, DueNow understands projects, analyzes workloads, predicts execution success, and proactively recommends the best course of action.
 
-The system combines Voice-First Interaction, Explainable AI, Workspace Intelligence™, Success Probability™, Submission Readiness™, and deep Google Workspace Integration into a single cohesive platform that transforms fragmented information into clear, actionable decisions.
+It combines intelligent planning, explainable AI reasoning, workspace analysis, and Google Workspace integration into one unified productivity platform.
 
-🎯 Problem Statement
+Hero Statement
 
-Current productivity ecosystems suffer from several limitations:
+DueNow is the world's first Voice-First AI Executive Companion that understands your work, predicts execution success, and actively helps you complete it.
 
-Users manually organize tasks, documents, meetings, and deadlines.
-Productivity data is fragmented across multiple applications.
-AI assistants respond only when asked and rarely understand complete project context.
-Existing tools cannot evaluate project readiness or execution quality.
-Users often miss deadlines despite using calendars and reminders.
-Decision-making remains entirely dependent on the user.
+Problem Statement
 
-DueNow solves these limitations by introducing an intelligent, context-aware executive assistant capable of proactive planning, reasoning, and execution guidance.
+Modern professionals and students manage work across disconnected tools.
 
-💡 Solution
+Typical workflow:
 
-Instead of acting as another productivity application, DueNow becomes the user's Executive AI Companion.
+• Gmail
 
-The platform continuously gathers context from connected workspaces, documents, calendars, tasks, emails, goals, and execution history. Using Explainable AI, it analyzes the user's workload, predicts execution risks, calculates success probabilities, and proactively recommends optimized actions before problems occur.
+• Google Calendar
 
-Rather than simply reminding users about deadlines, the AI explains:
+• Google Drive
 
-Why a task matters
-How it impacts overall success
-What should be done next
-Which alternative strategies exist
-How confidence levels change after every decision
+• Task Managers
 
-This transforms productivity from passive organization into intelligent execution.
+• Notes
 
-🏗️ System Architecture
-                        User
-                          │
-                          ▼
-                Voice / Text Commands
-                          │
-                          ▼
-          Executive Intelligence Engine
-                          │
-      ┌──────────────┬──────────────┬──────────────┐
-      ▼              ▼              ▼
-Planning AI    Workspace AI   Google Context AI
-      │              │              │
-      └──────────────┼──────────────┘
-                     ▼
-          Explainable AI Reasoning
-                     │
-         Success Probability™ Engine
-                     │
-          Workspace Health™ Engine
-                     │
-         Submission Readiness™ Engine
-                     │
-                     ▼
-             Personalized Recommendations
-                     │
-                     ▼
-                 User Dashboard
-⚡ Core Innovations
-🧠 Executive Intelligence Engine
+• Documents
 
-The central intelligence layer responsible for coordinating all platform services. It gathers context from every module, performs multi-stage reasoning, generates recommendations, explains every decision, and updates all affected systems after execution.
+• Reminders
 
-🎙️ Voice-First Interaction
+The result is:
 
-Unlike traditional productivity software that prioritizes manual input, DueNow allows users to interact naturally using voice.
+❌ Context switching
 
-Examples include:
+❌ Missed deadlines
 
-"Prepare my interview schedule."
-"Summarize today's emails."
-"Analyze my project workspace."
-"Create a meeting tomorrow."
-"Show my highest priority task."
+❌ Poor prioritization
 
-This enables hands-free productivity while maintaining conversational AI interactions.
+❌ Cognitive overload
 
-📂 Workspace Intelligence™
+❌ Reactive productivity
 
-One of DueNow's most innovative capabilities.
+Current assistants answer questions.
 
-Rather than merely storing uploaded files, the AI understands their semantic meaning and automatically:
+They don't understand work.
 
-Generates summaries
-Extracts deadlines
-Detects action items
-Identifies missing deliverables
-Creates related tasks
-Evaluates documentation quality
-Suggests improvements
+Our Solution
 
-Every workspace evolves into an intelligent knowledge environment.
+DueNow becomes a true AI Executive Companion.
 
-📈 Success Probability™
+Instead of simply managing tasks, it:
 
-A proprietary decision-support system that continuously estimates the likelihood of successful task or project completion based on:
+✓ Understands projects
 
-Current workload
-Time remaining
-Dependencies
-Workspace organization
-Documentation quality
-Historical execution performance
+✓ Understands documents
 
-Whenever the user modifies plans, the probability is recalculated instantly.
+✓ Understands schedules
 
-🩺 Workspace Health™
+✓ Understands priorities
 
-Evaluates project organization by analyzing:
+✓ Predicts execution success
 
-Documentation completeness
-Missing files
-Project structure
-Workspace activity
-Task completion
-Readiness indicators
+✓ Guides users toward better decisions
 
-The result is presented as a comprehensive health score with actionable recommendations.
+Core Innovation
 
-✅ Submission Readiness™
+DueNow introduces six integrated AI systems:
 
-Designed specifically for hackathons, research projects, startup pitches, and interviews.
+1. Voice-First Executive Companion
 
-The AI automatically verifies whether essential deliverables exist.
+Natural conversations instead of commands.
 
-Example:
+2. Success Probability™
 
-✔ README
+Transparent mathematical prediction of task completion.
 
-✔ Source Code
+3. Workspace Intelligence™
 
-✔ Presentation
+AI understands documents, code, presentations and project structure.
 
-✘ Demo Video Missing
+4. Workspace Health™
 
-✘ Architecture Diagram Missing
+Measures project readiness and identifies missing deliverables.
 
-The system then estimates completion effort and recommends the fastest path toward submission readiness.
+5. Submission Readiness™
 
-🔗 Google Workspace Integration
+Evaluates whether a project is actually ready for presentation or submission.
 
-DueNow seamlessly integrates with multiple Google services while respecting explicit user permissions.
+6. Executive Briefings
 
-Integrated services include:
+AI-generated morning, afternoon and evening planning summaries.
 
-Google Calendar
-Google Drive
-Gmail
-Google Docs
-Google Slides
-Google Tasks
-Google Contacts
-Google Keep
+What Makes DueNow Different
 
-These services operate as a unified ecosystem, allowing the AI to reason across meetings, emails, documents, tasks, and notes instead of treating them as isolated resources.
+Traditional Assistant
 
-🤖 Explainable AI
+• Answers questions
 
-Unlike many AI systems that provide recommendations without justification, DueNow follows an Explainable AI approach.
+• Sets reminders
 
-Every important recommendation includes:
+• Creates tasks
 
-Reasoning
-Context analyzed
-Expected impact
-Alternative options
-Confidence score
+DueNow
 
-This improves transparency and user trust while enabling informed decision-making.
+• Understands work
 
-🔄 Intelligent Workflow
-User Request
-      │
-      ▼
-Understand Intent
-      │
-      ▼
-Gather Context
-(Calendar • Gmail • Drive • Tasks • Workspaces)
-      │
-      ▼
-AI Multi-Stage Reasoning
-      │
-      ▼
-Risk Analysis
-      │
-      ▼
-Success Probability™
-      │
-      ▼
-Recommendation Generation
-      │
-      ▼
-Explainable Decision
-      │
-      ▼
-User Confirmation
-      │
-      ▼
-Execution
-      │
-      ▼
-System Updates
-🛠️ Technology Stack
+• Predicts execution success
+
+• Explains every recommendation
+
+• Analyzes projects
+
+• Coordinates Google Workspace
+
+• Acts proactively
+
+Technology Stack
+
 Frontend
-React
-TypeScript
-Vite
-Tailwind CSS
-Web Speech API
+
+• React
+
+• TypeScript
+
+• Tailwind CSS
+
 Backend
-Node.js
-Express.js
-Firebase Authentication
-Cloud Firestore
-Firebase Storage
-Artificial Intelligence
-Google Gemini
-Explainable AI Reasoning Pipeline
+
+• Node.js
+
+• Express
+
+• Firebase
+
+AI
+
+• Google Gemini
+
+Google Workspace
+
+• Calendar
+
+• Gmail
+
+• Drive
+
+• Docs
+
+• Slides
+
+• Tasks
+
+• Contacts
+
+• Keep
+
+Voice
+
+• Web Speech API
+
+Cloud
+
+• Firebase Hosting
+
+• Firestore
+
+• Firebase Storage
+
+System Architecture
+User
+
+↓
+
+Voice / Text
+
+↓
+
 Executive Intelligence Engine
+
+↓
+
 Workspace Intelligence™
-Success Probability™ Algorithms
-Integrations
-Google Calendar API
-Gmail API
-Google Drive API
-Google Tasks
-Google Docs
-Google Slides
-Google Contacts
-Google Keep
-🌍 Target Users
 
-DueNow has been designed to support a broad range of users, including:
+↓
 
-Students
-Professionals
-Startup Founders
-Researchers
-Software Developers
-Project Managers
-Freelancers
-Content Creators
+Google Workspace
 
-The architecture is modular and scalable, allowing future expansion into enterprise environments.
+↓
 
-🚀 Future Vision
+Firestore
 
-The long-term vision for DueNow is to evolve beyond a productivity application into a complete AI Executive Operating System capable of orchestrating an individual's digital workspace across multiple platforms while maintaining transparency, privacy, and explainable decision-making.
+↓
 
-Future enhancements include enterprise collaboration, desktop integration, advanced workflow automation, multi-agent orchestration, and deeper AI reasoning capabilities.
+AI Reasoning Engine
 
-⭐ Why DueNow Stands Out
+↓
 
-DueNow is not simply another AI chatbot or task management platform.
+Recommendations
 
-It represents a shift from passive productivity tools to proactive executive intelligence.
+↓
 
-By combining Voice-First Interaction, Workspace Intelligence™, Explainable AI, Success Probability™, Submission Readiness™, and deep Google Workspace integration, DueNow empowers users to spend less time managing work and more time accomplishing it.
+User
+AI Reasoning Pipeline
+User Request
 
-Our vision is simple yet ambitious: to build an AI Executive Companion that doesn't just organize work—it understands it, reasons about it, and helps users execute it with confidence.
+↓
+
+Intent Detection
+
+↓
+
+Context Collection
+
+↓
+
+Workspace Analysis
+
+↓
+
+Calendar Analysis
+
+↓
+
+Task Analysis
+
+↓
+
+Success Probability™
+
+↓
+
+Recommendation
+
+↓
+
+Explainable AI
+
+↓
+
+Execution
+Example
+
+User
+
+"I have an interview on Friday."
+
+DueNow
+
+• Reviews Calendar
+
+• Reviews Preparation Workspace
+
+• Reviews Resume
+
+• Reviews Notes
+
+• Calculates Success Probability™
+
+• Creates Study Plan
+
+• Schedules Focus Sessions
+
+• Explains every recommendation
+
+Competitive Advantages
+
+✓ Explainable AI
+
+✓ Voice-first productivity
+
+✓ Workspace Intelligence™
+
+✓ Success Probability™
+
+✓ Google Workspace Integration
+
+✓ Executive Intelligence Layer
+
+✓ Transparent AI reasoning
+
+✓ Modern executive interface
+
+Vision
+
+We believe AI should not simply answer questions.
+
+It should help people execute meaningful work with confidence.
+
+DueNow transforms AI from a passive assistant into an intelligent executive partner.
+
+Future Roadmap
+
+• Team collaboration
+
+• Desktop companion
+
+• Mobile applications
+
+• Enterprise deployment
+
+• Cross-platform integrations
+
+• Advanced predictive analytics
+
+Why This Matters
+
+Productivity tools organize information.
+
+DueNow understands it.
+
+Instead of helping users remember work, it helps them complete it.
